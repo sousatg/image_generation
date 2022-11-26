@@ -1,0 +1,6 @@
+env/
+__pycache__
+media/
+output/
+pil_text.png
+test.png
