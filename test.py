@@ -2,36 +2,42 @@ from PIL import Image, ImageDraw, ImageFont
 from split_text import solution
 
 
-FONT = "Ubuntu-R.ttf"
-
-def get_font_size(im, draw, text):
-    """
-    Based in image size and the text calculate font size
-    to fill the image width
-    :param im Image
-    :param draw ImageDraw
-    : param text string
-    """
+class InstagramImage:
+    FONT = "Ubuntu-R.ttf"
+    BACKGROUND_COLOR = '#F5D2B4'
+    TEXT_COLOR = '#B46C63'
     fontsize = 1
-    font = ImageFont.truetype(FONT, fontsize)
 
-    while draw.textsize(text, font)[0] < 0.9 * im.size[0]:
-        fontsize += 1
-        font = ImageFont.truetype(FONT, fontsize)
+    def __init__(self, text:str):
+        self.text = text
+        self.img = Image.new('RGB', (1080, 1080), self.BACKGROUND_COLOR)
+        self.draw = ImageDraw.Draw(self.img)
 
-    return fontsize
+    def _generate_font(self):
+        self.font = ImageFont.truetype(self.FONT, self.fontsize)
 
-img = Image.new('RGB', (1080, 1080), '#F5D2B4')
-draw = ImageDraw.Draw(img)
+    def _calculate_font_size(self):
+        self._generate_font()
 
-text = solution("O amor está em quem ama e não em quem é amado. (Platão)").upper()
+        max_text_width = 0.9 * self.img.size[0]
+        
+        while self.draw.textsize(self.text, self.font)[0] < max_text_width:
+            self.fontsize += 1
+            self._generate_font()
 
-fontsize = get_font_size(img, draw, text) -1
+    def calculate_text_center_position(self):
+        w, h = self.draw.textsize(self.text, font=self.font)
+        
+        return ((1080-w) / 2,(1080-h) / 2)
 
-font = ImageFont.truetype("Ubuntu-R.ttf", fontsize)
+    def save(self):
+        self._calculate_font_size()
+        center_position = self.calculate_text_center_position()
 
-w, h = draw.textsize(text, font=font)
+        self.draw.text(center_position, text=self.text, font=self.font, fill=self.TEXT_COLOR)
 
-draw.text(((1080-w) / 2,(1080-h) / 2),text=text, font=font, fill='#B46C63')
+        self.img.save('test.png')
 
-img.save('test.png')
+
+i_image = InstagramImage(solution("O amor está em quem ama e não em quem é amado. (Platão)").upper())
+i_image.save()
