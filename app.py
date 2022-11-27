@@ -14,7 +14,7 @@ def get_font_size(im: Image, draw: ImageDraw, text: str) -> int:
     :param text string
     """
     fontsize = 1
-    font = ImageFont.truetype(FONT, fontsize)
+    font = ImageFont.truetype(FONT, fontsize) 
 
     while draw.textsize(text, font)[0] < 0.9 * im.size[0]:
         fontsize += 1
