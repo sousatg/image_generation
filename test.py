@@ -1,5 +1,17 @@
 from PIL import Image, ImageDraw, ImageFont
+import markovify
 from split_text import solution
+
+
+def generate_text():
+    with open('corpus.txt', 'r') as fh:
+        text = fh.read()
+
+    text_model = markovify.Text(text)
+
+    generated_sentence = text_model.make_short_sentence(280)
+    
+    return generated_sentence
 
 
 class InstagramImage:
@@ -27,7 +39,7 @@ class InstagramImage:
 
     def calculate_text_center_position(self):
         w, h = self.draw.textsize(self.text, font=self.font)
-        
+
         return ((1080-w) / 2,(1080-h) / 2)
 
     def save(self):
@@ -39,5 +51,5 @@ class InstagramImage:
         self.img.save('test.png')
 
 
-i_image = InstagramImage(solution("O amor está em quem ama e não em quem é amado. (Platão)").upper())
+i_image = InstagramImage(solution(generate_text()).upper())
 i_image.save()
