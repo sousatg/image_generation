@@ -1,0 +1,3 @@
+# Image Geneator
+
+## Folder Structure

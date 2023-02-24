@@ -1,6 +1,9 @@
-import csv
+from flask import Flask, send_file, request, Response
 from PIL import Image, ImageDraw, ImageFont
+from io import BytesIO
 import time
+app = Flask(__name__)
+
 
 FONT = "Ubuntu-R.ttf"
 
@@ -52,11 +55,22 @@ def generate_image(text: str):
 
     return img
 
-    img.save(f'images/img_{time.time()}.png')
+@app.route("/generate", methods=["POST"])
+def generate():
+    try:
+        text = request.json["text"]
+    except:
+        return Response(None,400)
+    
+    if text == "":
+        return Response(None, 400)
+    
+    byte_io = BytesIO()
+    img = generate_image(split_text(text))
+    img.save(byte_io, 'png')
+    byte_io.seek(0)
 
+    return send_file(byte_io, download_name=f"{time.time()}.png")
 
-with open('output/frases.csv', 'r') as fh:
-    reader_csv = csv.reader(fh)
-    for row in reader_csv:
-        text = split_text(row[0].strip()).upper()
-        generate_image(text)
+if __name__ == '__main__':
+    app.run('0.0.0.0', debug=True, port="8080")
