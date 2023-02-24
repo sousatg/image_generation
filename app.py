@@ -10,7 +10,7 @@ def get_font_size(im: Image, draw: ImageDraw, text: str) -> int:
     to fill the image width
     :param im Image
     :param draw ImageDraw
-    :param text string
+    :param text str
     """
     fontsize = 1
     font = ImageFont.truetype(FONT, fontsize) 
@@ -22,6 +22,10 @@ def get_font_size(im: Image, draw: ImageDraw, text: str) -> int:
     return fontsize
 
 def split_text(text):
+    """
+    Break a phrase from single line in multiple lines
+    :param text str
+    """
     words = text.split(' ')
 
     new_text = []
@@ -39,6 +43,10 @@ def split_text(text):
     return ''.join(new_text)
 
 def generate_image(text: str):
+    """
+    Given a text scale it to fit a image of 1080x1080 px and return in
+    param text str
+    """
     img = Image.new('RGB', (1080, 1080), '#F5D2B4')
     draw = ImageDraw.Draw(img)
 
@@ -52,11 +60,12 @@ def generate_image(text: str):
 
     return img
 
-    img.save(f'images/img_{time.time()}.png')
 
 
-with open('output/frases.csv', 'r') as fh:
-    reader_csv = csv.reader(fh)
-    for row in reader_csv:
-        text = split_text(row[0].strip()).upper()
-        generate_image(text)
+if __name__ == '__main__':
+    with open('output/frases.csv', 'r') as fh:
+        reader_csv = csv.reader(fh)
+        for row in reader_csv:
+            text = split_text(row[0].strip()).upper()
+            img = generate_image(text)
+            img.save(f'images/img_{time.time()}.png')
