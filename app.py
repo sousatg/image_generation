@@ -31,11 +31,11 @@ def split_text(text):
     count = 0
     for i in range(len(text)):
         if text[i] == " ":
-            if count == 3:
-                text = text[:i] + "\n" + text[i+1:]
-                count = 0
-            else:
-                count += 1
+            count += 1
+
+        if count == 4:
+            text = text[:i] + "\n" + text[i+1:]
+            count = 0
 
     return text
 
