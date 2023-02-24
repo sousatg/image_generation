@@ -3,6 +3,8 @@ from PIL import Image, ImageDraw, ImageFont
 import time
 
 FONT = "Ubuntu-R.ttf"
+IMAGE_WIDTH = 1080
+IMAGE_HEIGHT = 1080
 
 
 def get_font_size(im: Image, draw: ImageDraw, text: str) -> int:
@@ -13,17 +15,21 @@ def get_font_size(im: Image, draw: ImageDraw, text: str) -> int:
     :param draw ImageDraw
     :param text str
     """
+    if text == "":
+        raise Exception("Text parameter can't be empty")
+
     fontsize = 1
     font = ImageFont.truetype(FONT, fontsize)
 
-    while draw.textsize(text, font)[0] < 0.9 * im.size[0]:
+    ninety_percent_of_image_width = 0.9 * im.size[0]
+    while draw.textsize(text, font)[0] < ninety_percent_of_image_width:
         fontsize += 1
         font = ImageFont.truetype(FONT, fontsize)
 
     return fontsize
 
 
-def split_text(text):
+def split_text(text: str) -> str:
     """
     Break a phrase from single line in multiple lines
     :param text str
@@ -45,17 +51,18 @@ def generate_image(text: str):
     Given a text scale it to fit a image of 1080x1080 px and return in
     param text str
     """
-    img = Image.new('RGB', (1080, 1080), '#F5D2B4')
+    img = Image.new('RGB', (IMAGE_WIDTH, IMAGE_HEIGHT), '#F5D2B4')
     draw = ImageDraw.Draw(img)
 
     fontsize = get_font_size(img, draw, text) - 1
 
-    font = ImageFont.truetype("Ubuntu-R.ttf", fontsize)
+    font = ImageFont.truetype(FONT, fontsize)
 
     w, h = draw.textsize(text, font=font)
 
+    image_center_tuple = ((IMAGE_WIDTH-w) / 2, (IMAGE_HEIGHT-h) / 2)
     draw.text(
-        ((1080-w) / 2, (1080-h) / 2),
+        image_center_tuple,
         text=text,
         font=font,
         fill='#B46C63')
