@@ -28,21 +28,16 @@ def split_text(text):
     Break a phrase from single line in multiple lines
     :param text str
     """
-    words = text.split(' ')
-
-    new_text = []
     count = 0
-    for i in range(len(words)):
-        new_text.append(words[i])
-        count += 1
+    for i in range(len(text)):
+        if text[i] == " ":
+            if count == 3:
+                text = text[:i] + "\n" + text[i+1:]
+                count = 0
+            else:
+                count += 1
 
-        if count == 4:
-            count = 0
-            new_text.append('\n')
-        else:
-            new_text.append(' ')
-
-    return ''.join(new_text)
+    return text
 
 
 def generate_image(text: str):
