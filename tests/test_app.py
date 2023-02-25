@@ -16,6 +16,7 @@ class TestSplitText(unittest.TestCase):
 
         self.assertEqual(expected, result)
 
+
 class TestGetFontSize(unittest.TestCase):
     def test_text_is_empty_string(self):
         img = Image.new('RGB', (1080, 1080), '#F5D2B4')

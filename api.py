@@ -1,4 +1,4 @@
-from flask import Flask, send_file, request, Response
+from flask import Flask, send_file, request, Response, render_template
 from app import generate_image, split_text
 from io import BytesIO
 import time
@@ -7,15 +7,21 @@ import time
 app = Flask(__name__)
 
 
+@app.route("/", methods=["GET"])
+def index():
+    return render_template("home.html")
+
+
 @app.route("/generate", methods=["POST"])
 def generate():
     try:
         text = request.json["text"]
     except Exception as e:
-        return Response(e, 400)
+        print(e)
+        return Response("Exception when getting the text propert", 400)
 
     if text == "":
-        return Response(None, 400)
+        return Response("Text is empty", 400)
 
     byte_io = BytesIO()
     img = generate_image(split_text(text))

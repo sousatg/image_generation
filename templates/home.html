@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <title>Image Generator</title>
+    <style>
+      .center {
+        display: flex;
+        height: 100vh;
+        width: 100vw;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="row p-3">
+        <div class="offset-sm-3 col-sm-4">
+          <h1 class="text-center">Image generation</h1>
+          <p class="text-center">Generate a image with text centered in it</p>
+          <form id="image_generation">
+            <div class="form-group">
+              <textarea
+                class="form-control"
+                id="text"
+                name="text"
+                rows="3"
+              ></textarea>
+            </div>
+            <br />
+            <button type="submit" class="btn btn-outline-primary">
+              Generate
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://code.jquery.com/jquery-3.6.3.min.js"
+      integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      var form = document.getElementById("image_generation");
+
+      function submitHandler(e) {
+        try {
+          var formData = new FormData(form);
+          var ConvertedJSON = {};
+          for (const [key, value] of formData.entries()) {
+            ConvertedJSON[key] = value;
+          }
+          const a = fetch("/generate", {
+            method: "POST",
+            body: JSON.stringify(ConvertedJSON),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then(response => response.blob())
+            .then(a => {
+              const imageURL = URL.createObjectURL(a);
+              const link = document.createElement("a");
+              link.href = imageURL;
+              link.download = "image file name here";
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+            });
+        } catch (e) {
+          console.log(e);
+        }
+
+        e.preventDefault();
+      }
+
+      form.addEventListener("submit", submitHandler);
+    </script>
+  </body>
+</html>
