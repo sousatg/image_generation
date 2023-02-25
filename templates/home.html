@@ -61,12 +61,13 @@
 
       function submitHandler(e) {
         try {
-          var formData = new FormData(form);
-          var ConvertedJSON = {};
+          const formData = new FormData(form);
+          const ConvertedJSON = {};
+
           for (const [key, value] of formData.entries()) {
             ConvertedJSON[key] = value;
           }
-          const a = fetch("/generate", {
+          fetch("/generate", {
             method: "POST",
             body: JSON.stringify(ConvertedJSON),
             headers: {
@@ -74,11 +75,14 @@
             },
           })
             .then(response => response.blob())
-            .then(a => {
-              const imageURL = URL.createObjectURL(a);
+            .then(imageBlob => {
+              const currentDate = new Date();
+              const timestamp = currentDate.getTime();
+
+              const imageURL = URL.createObjectURL(imageBlob);
               const link = document.createElement("a");
               link.href = imageURL;
-              link.download = "image file name here";
+              link.download = timestamp;
               document.body.appendChild(link);
               link.click();
               document.body.removeChild(link);
